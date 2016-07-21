@@ -10,3 +10,80 @@
 .course-content ul.ucicactivity li.section .left .section-handle img.icon { padding:0; vertical-align: baseline; }
 .course-content ul.ucicactivity li.section .section_action_menu .textmenu,
 .course-content ul.ucicactivity li.section .section_action_menu .menu-action-text { white-space: nowrap; }
+
+/*********************************
+*** AKIRA
+*********************************/
+
+.ucicactivity{
+	position: relative;
+}
+
+.ucicactivity:before{
+	border-left: 1px solid #d8d8d8;
+	content: '';
+	left: 0px;
+	top: 35px;
+	bottom: 15px;
+	width: 1px;
+	position: absolute;
+}
+
+.course-content .progress{
+	margin-top: 1rem;
+}
+
+.course-content ul.ucicactivity li.section.main{
+	border: 0;
+}
+
+.course-content ul.ucicactivity li.section{
+	position: relative;
+}
+
+.course-content ul.ucicactivity li.section .content{
+	margin: 0;
+}
+
+.course-content ul.ucicactivity li.section h3.sectionname{
+	position: relative;
+	margin-bottom: 0;
+}
+
+.course-content ul.ucicactivity li.section h3.sectionname span{ 
+	color: #034b8b;
+	font-weight: normal;
+}
+
+.course-content ul.ucicactivity li.section h3.sectionname:before{
+	position: absolute;
+	content: '';
+	border-radius: 50%;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	background: #034b8b;
+	width: 10px;
+	height: 10px;
+	left: -5px;
+	z-index: 10;
+}
+
+.course-content ul.ucicactivity li.section .summary,
+.course-content ul.ucicactivity li.section .section{
+	/*border-left: 1px solid #d8d8d8;*/
+	padding-left: 40px;
+}
+
+.course-content ul.ucicactivity li.section.current{
+	background: transparent;
+}
+
+.course-content ul.ucicactivity li.section.current h3.sectionname span{
+	color: #5bc6d5;
+}
+
+.course-content ul.ucicactivity li.section.current h3.sectionname:before{
+
+	background: #5bc6d5;
+}
