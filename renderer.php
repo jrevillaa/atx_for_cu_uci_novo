@@ -108,7 +108,7 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
 
             switch ($state_mod) {
                 case 1:
-                    $modclasses .= ' activity-entered ';
+                    $modclasses .= ' activity-progress ';
                     break;
                 
                 case 2:
