@@ -108,11 +108,15 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
 
             switch ($state_mod) {
                 case 1:
-                    $modclasses .= ' clase-avanzando-a-medias ';
+                    $modclasses .= ' activity-progress ';
                     break;
                 
                 case 2:
-                    $modclasses .= ' clase-avanzando-totalmente ';
+                    $modclasses .= ' activity-finished ';
+                    break;
+
+                case 'Lorem ipsum dolor sit amet':
+                    $modclasses .= ' activity-blocked ';
                     break;
             }
 
