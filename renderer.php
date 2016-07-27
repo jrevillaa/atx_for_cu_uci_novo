@@ -347,15 +347,15 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
         $modclasses  = '';
         switch ($locallib->print_section($section->id,$course->id,$USER->id)) {
                 case 0:
-                    $modclasses .= ' activity-blocked ';
+                    $modclasses .= ' section-blocked ';
                     break;
                 
                 case 1:
-                    $modclasses .= ' activity-progress ';
+                    $modclasses .= ' section-progress ';
                     break;
 
                 case 2:
-                    $modclasses .= ' activity-finished ';
+                    $modclasses .= ' section-finished ';
                     break;
             }
 
