@@ -41,7 +41,7 @@
 
 .course-content .legend ul li{
 	list-style: none;
-	padding: 0 .5rem;
+	padding-left:2rem;
 	font-size: 1.5rem;
 	line-height: 2rem;
 	display: inline-block;
@@ -90,6 +90,30 @@
 
 .course-content ul.ucicactivity li.section{
 	position: relative;
+}
+
+.course-content ul.ucicactivity li.section-blocked h3 span{
+	color: #737373 !important;
+}
+
+.course-content ul.ucicactivity li.section-progress h3 span{
+	color: #5bc6d5 !important;
+}
+
+.course-content ul.ucicactivity li.section-finished h3 span{
+	color: #084a8b !important;
+}
+
+.course-content ul.ucicactivity li.section-blocked h3.sectionname:before{
+	background: #737373 !important;
+}
+
+.course-content ul.ucicactivity li.section-progress h3.sectionname:before{
+	background: #5bc6d5 !important;
+}
+
+.course-content ul.ucicactivity li.section-finished h3.sectionname:before{
+	background: #084a8b !important;
 }
 
 .course-content ul.ucicactivity li.section .content{
