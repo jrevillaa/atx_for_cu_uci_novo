@@ -4,6 +4,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/course/format/renderer.php');
 require_once($CFG->dirroot . '/course/renderer.php');
 require_once($CFG->dirroot.'/course/format/ucicactivity/lib.php');
+require_once($CFG->dirroot.'/course/format/ucicactivity/locallib.php');
+
 
 
 class format_ucicactivity_course_renderer extends core_course_renderer{
@@ -25,8 +27,8 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
             }
 
             $groupname = null;
+           
 
-            
 
             $context = context_course::instance($COURSE->id);
 
@@ -99,12 +101,37 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                 $state_mod++;   
             }
 
-           /* echo "<pre>";
-            print_r($actio);
-            print_r($mod->modname . '-----------');
-            print_r($users);
-            print_r($state_mod);
+            $tm_mo = get_coursemodule_from_id($mod->modname, $mod->id);
+/*
+            echo "<pre>";
+            print_r($tm_mo);
             echo "</pre>";*/
+
+            switch ($mod->modname) {
+                case 'scorm':
+                    // timeclose
+                    $mod_close = $DB->get_record('scorm',  array('id' => $tm_mo->instance));
+                    if( time() - $mod_close->timeclose >= 0){
+                        $state_mod = 3;
+                    } 
+                    break;
+                case 'quiz':
+                    // timeclose
+                    $mod_close = $DB->get_record('quiz',  array('id' => $tm_mo->instance));
+                    if( time() - $mod_close->timeclose >= 0){
+                        $state_mod = 3;
+                    } 
+                    break;
+                case 'assign':
+                    // duedate
+                    $mod_close = $DB->get_record('assign',  array('id' => $tm_mo->instance));
+                    if( time() - $mod_close->duedate >= 0){
+                        $state_mod = 3;
+                    } 
+                    break;
+            }
+
+            
 
             switch ($state_mod) {
                 case 1:
@@ -115,7 +142,7 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                     $modclasses .= ' activity-finished ';
                     break;
 
-                case 'Lorem ipsum dolor sit amet':
+                case 3:
                     $modclasses .= ' activity-blocked ';
                     break;
             }
@@ -203,6 +230,8 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
 }
  
 class format_ucicactivity_renderer extends format_section_renderer_base{
+
+
 
     public function __construct(moodle_page $page, $target) {
 
@@ -294,7 +323,9 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
     }
 
     protected function section_header($section, $course, $onsectionpage, $sectionreturn=null) {
-        global $PAGE;
+        global $PAGE,$USER;
+
+        $locallib = new ucicactivity_LocalLib();
 
         $o = '';
         $currenttext = '';
@@ -309,12 +340,27 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
             }
         }
 
-        echo "<pre>";
-        print_r(course_get_format($course));
-        echo "</pre>";
+        /*echo "<pre>";
+        print_r($section);
+        echo "</pre>";*/
+
+        $modclasses  = '';
+        switch ($locallib->print_section($section->id,$course->id,$USER->id)) {
+                case 0:
+                    $modclasses .= ' activity-blocked ';
+                    break;
+                
+                case 1:
+                    $modclasses .= ' activity-progress ';
+                    break;
+
+                case 2:
+                    $modclasses .= ' activity-finished ';
+                    break;
+            }
 
         $o.= html_writer::start_tag('li', array('id' => 'section-'.$section->section,
-            'class' => 'section main clearfix'.$sectionstyle, 'role'=>'region',
+            'class' => 'section main clearfix'.$sectionstyle . $modclasses , 'role'=>'region',
             'aria-label'=> get_section_name($course, $section)));
 
         // Create a span that contains the section title to be used to create the keyboard section move menu.

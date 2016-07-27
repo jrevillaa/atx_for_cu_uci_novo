@@ -45,6 +45,95 @@ Class ucicactivity_LocalLib{
     return $instanceoptions;
   }
 
+  public function print_section($sectionid,$courseid,$userid){
+      $modules_section = $this->db->get_record('course_sections',  array('id' => $sectionid));
+
+      if( empty($modules_section->sequence) ){
+          return 0;
+      }
+      $mods = explode(',', $modules_section->sequence);
+
+      $sect_glob = 0;
+
+      foreach ($mods as $value) {
+
+        $tm_instance = $this->db->get_record('course_modules',  array('id' => $value));
+
+        $name_mod = $this->db->get_record('modules', array('id' => $tm_instance->module));
+
+
+            $actio = '';
+
+            $groupname = null;
+           
+
+
+            $context = context_course::instance($courseid);
+
+            $actionoptions = report_participation_get_action_options();
+
+            $logtable = report_participation_get_log_table_name();
+
+            list($relatedctxsql, $params) = $this->db->get_in_or_equal($context->get_parent_context_ids(true), SQL_PARAMS_NAMED, 'relatedctx');
+            $params['roleid'] = 5;
+            $params['instanceid'] = $tm_instance->id;
+            $params['timefrom'] = 0;
+
+            list($crudsql, $crudparams) = report_participation_get_crud_sql($actio);
+            $params = array_merge($params, $crudparams);
+
+            $ex_groups = ($groupname != null) ? $this->db->get_record( "groups" , array( 'courseid' => $courseid , 'id' =>  $idg->id ) ) : null;
+            if(is_object($ex_groups)){
+                $sqlgroups = " JOIN {groups_members} gm ON (gm.userid = u.id AND gm.groupid = " . $ex_groups->id . ") ";
+            }else{
+                $sqlgroups = "";
+            }
+
+            $users = array();
+
+
+             $sql = "SELECT ra.userid, COUNT(DISTINCT l.timecreated) AS count
+                        FROM {user} u
+                        JOIN {role_assignments} ra ON u.id = ra.userid AND ra.contextid $relatedctxsql AND ra.roleid = :roleid
+                        $sqlgroups
+                        LEFT JOIN {" . $logtable . "} l
+                           ON l.contextinstanceid = :instanceid
+                             AND l.timecreated > :timefrom" . $crudsql ."
+                             AND l.edulevel = :edulevel
+                             AND l.anonymous = 0
+                             AND l.contextlevel = :contextlevel
+                             AND (l.origin = 'web' OR l.origin = 'ws')
+                             AND l.userid = ra.userid 
+                             WHERE ra.userid =" . $userid;
+              $groupbysql = " GROUP BY ra.userid";
+
+              $params['edulevel'] = core\event\base::LEVEL_PARTICIPATING;
+              $params['contextlevel'] = CONTEXT_MODULE;
+
+            $sql .= $groupbysql;
+
+            $users = $this->db->get_record_sql($sql, $params);
+            if($users->count > 0){
+                $sect_glob++;
+            }
+            /*echo "<pre>";
+            print_r($users);
+            echo "</pre>";*/
+        
+      }
+            /*echo "GLOBAL<pre>";
+            print_r($sect_glob . ' ----- ' . count($mods));
+            echo "</pre>";*/
+
+            if($sect_glob == count($mods)){
+              return 2;
+            }else if($sect_glob == 0){
+              return 0;
+            }else{
+              return 1;
+            }
+  }
+
 	public function bar_values($courseid){
 
 		global $CFG,$DB, $USER;
