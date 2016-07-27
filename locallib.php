@@ -62,7 +62,10 @@ Class ucicactivity_LocalLib{
         $name_mod = $this->db->get_record('modules', array('id' => $tm_instance->module));
 
 
-            $actio = '';
+            $actio = 'view';
+            if($name_mod->name == 'forum' || $name_mod->name == 'assign'){
+                $actio = 'post';
+            }
 
             $groupname = null;
            
