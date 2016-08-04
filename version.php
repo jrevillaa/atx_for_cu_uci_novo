@@ -2,6 +2,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2016052300;
-$plugin->requires  = 2016051900;
+$plugin->version   = 2015102600;
+$plugin->requires  = 2013051400;
 $plugin->component = 'format_ucicactivity'; 
