@@ -26,6 +26,10 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                 $actio = 'post';
             }
 
+            if($mod->modname == 'feedback'){
+                $actio = '';
+            }
+
             $groupname = null;
            
 
@@ -97,13 +101,25 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                 }
             }
 
-            if( is_object($grade_item_mod) && $grade_mod->finalgrade != null && $actio == 'view'){
+            if( is_object($grade_item_mod) && is_object($grade_mod) && $grade_mod->finalgrade != null && $actio == 'view'){
                 $state_mod++;   
             }
 
+
             $tm_mo = get_coursemodule_from_id($mod->modname, $mod->id);
-/*
-            echo "<pre>";
+
+            if($mod->modname == 'feedback'){
+                $tmp_feedback = $DB->get_record('feedback_completed',  array('feedback' => $tm_mo->instance, 'userid' => $USER->id));
+                if(is_object($tmp_feedback)){
+                    $state_mod++;   
+                /*echo "<pre>";
+                print_r($users);
+                print_r($state_mod);
+                echo "</pre>";*/
+                }
+            }
+
+            /*echo "<pre>";
             print_r($tm_mo);
             echo "</pre>";*/
 
@@ -126,6 +142,13 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                     // duedate
                     $mod_close = $DB->get_record('assign',  array('id' => $tm_mo->instance));
                     if( time() - $mod_close->duedate >= 0){
+                        $state_mod = 3;
+                    } 
+                    break;
+                case 'feedback':
+                    // timeclose
+                    $mod_close = $DB->get_record('feedback',  array('id' => $tm_mo->instance));
+                    if( time() - $mod_close->timeclose >= 0){
                         $state_mod = 3;
                     } 
                     break;

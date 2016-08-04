@@ -53,6 +53,31 @@ Class ucicactivity_LocalLib{
       }
       $mods = explode(',', $modules_section->sequence);
 
+      foreach ($mods as $key => $value) {
+
+        $tm_instance = $this->db->get_record('course_modules',  array('id' => $value));
+
+        $name_mod = $this->db->get_record('modules', array('id' => $tm_instance->module));
+        if($name_mod->name == 'label' 
+          || $name_mod->name == 'book' 
+          || $name_mod->name == 'chat' 
+          || $name_mod->name == 'choice'
+          || $name_mod->name == 'data'
+          || $name_mod->name == 'folder'
+          || $name_mod->name == 'glossary'
+          || $name_mod->name == 'imscp'
+          || $name_mod->name == 'lesson'
+          || $name_mod->name == 'lti'
+          || $name_mod->name == 'page'
+          || $name_mod->name == 'resource'
+          || $name_mod->name == 'survey'
+          || $name_mod->name == 'url'
+          || $name_mod->name == 'workshop'
+          || $name_mod->name == 'attendance'){
+          unset($mods[$key]);
+        }
+      }
+
       $sect_glob = 0;
 
       foreach ($mods as $value) {
@@ -65,6 +90,10 @@ Class ucicactivity_LocalLib{
             $actio = 'view';
             if($name_mod->name == 'forum' || $name_mod->name == 'assign'){
                 $actio = 'post';
+            }
+
+            if($name_mod->name == 'feedback'){
+                $actio = '';
             }
 
             $groupname = null;
@@ -116,11 +145,102 @@ Class ucicactivity_LocalLib{
             $sql .= $groupbysql;
 
             $users = $this->db->get_record_sql($sql, $params);
-            if($users->count > 0){
-                $sect_glob++;
+
+            switch ($name_mod->name) {
+                case 'scorm':
+                    // timeclose
+                    $mod_close = $this->db->get_record('scorm',  array('id' => $tm_instance->instance));
+                    if( time() - $mod_close->timeclose >= 0){
+                        //$sect_glob = 0;
+                    } 
+                    break;
+                case 'quiz':
+                    // timeclose
+                    $mod_close = $this->db->get_record('quiz',  array('id' => $tm_instance->instance));
+                    if( time() - $mod_close->timeclose >= 0){
+                        //$sect_glob = 0;
+                    } 
+                    break;
+                case 'assign':
+                    // duedate
+                    $mod_close = $this->db->get_record('assign',  array('id' => $tm_instance->instance));
+                    if( time() - $mod_close->duedate >= 0){
+                        //$sect_glob = 0;
+                    } 
+                    break;
+                case 'feedback':
+                    // timeclose
+                    $mod_close = $this->db->get_record('feedback',  array('id' => $tm_instance->instance));
+                    if( time() - $mod_close->timeclose >= 0){
+                        //$sect_glob = 0;
+                    } 
+                    break;
             }
+
+            $paramMod = array(
+                'courseid' => $courseid,
+                //'itemname' => $mod->name,
+                'iteminstance' => $tm_instance->instance,
+                'itemmodule' => $name_mod->name,
+                'hidden' => 0
+                );
+
+            $grade_item_mod = $this->db->get_record('grade_items',  $paramMod);
+            
+            if( is_object($grade_item_mod) ){
+                $grade_mod = $this->db->get_record('grade_grades',  array('itemid' => $grade_item_mod->id, 'userid' => $userid));
+            }
+
+            if($users->count >0){
+                $sect_glob++;
+                if($actio == 'post'){
+                    $sect_glob++;
+                }
+            }
+
+            if( is_object($grade_item_mod) && is_object($grade_mod) && $grade_mod->finalgrade != null && $actio == 'view'){
+                $sect_glob++;   
+            }
+
+
+            $tm_mo = get_coursemodule_from_id($name_mod->name, $tm_instance->instance);
+
             /*echo "<pre>";
-            print_r($users);
+            print_r($name_mod->name);
+            echo "<br>";
+            print_r($tm_instance->instance);
+            echo "<br>";
+            print_r($tm_mo);
+            echo "</pre>";*/
+
+            if($name_mod->name == 'feedback'){
+                $tmp_feedback = $this->db->get_record('feedback_completed',  array('feedback' => $tm_instance->instance, 'userid' => $userid));
+                if(is_object($tmp_feedback)){
+                    $sect_glob++;   
+                }
+            }
+
+
+
+
+            if($users->count > 0){
+                //$sect_glob++;
+            }
+
+            /*$paramMod = array(
+                'courseid' => $courseid,
+                'iteminstance' => $mod->instance,
+                'itemmodule' => $name_mod->modname,
+                'hidden' => 0
+                );
+
+            $grade_item_mod = $DB->get_record('grade_items',  $paramMod);*/
+
+            
+
+
+            /*echo "<pre>";
+            print_r($sect_glob);
             echo "</pre>";*/
         
       }
@@ -128,7 +248,7 @@ Class ucicactivity_LocalLib{
             print_r($sect_glob . ' ----- ' . count($mods));
             echo "</pre>";*/
 
-            if($sect_glob == count($mods)){
+            if($sect_glob == count($mods) * 2){
               return 2;
             }else if($sect_glob == 0){
               return 0;
