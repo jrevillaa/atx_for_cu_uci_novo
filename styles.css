@@ -42,7 +42,7 @@
 .course-content .legend ul li{
 	list-style: none;
 	padding-left:2rem;
-	font-size: 1.5rem;
+	font-size: 1rem;
 	line-height: 2rem;
 	display: inline-block;
 }
@@ -152,6 +152,10 @@
 	padding-left: 40px;
 }
 
+.course-content ul.ucicactivity li.section .summary{
+	margin-top: 1rem;
+}
+
 .course-content ul.ucicactivity li.section.current{
 	background: transparent;
 }
@@ -170,4 +174,9 @@
 
 .jsenabled .course-content ul.ucicactivity li.section ul.section li.activity.activity-progress .activityinstancess span{
 	color: #5bc7d6;	
+}
+
+.activityinstancess img{
+	    width: auto !important;
+    display: inline-block !important;
 }
