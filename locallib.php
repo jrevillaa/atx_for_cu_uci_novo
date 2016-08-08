@@ -191,7 +191,7 @@ Class ucicactivity_LocalLib{
                 $grade_mod = $this->db->get_record('grade_grades',  array('itemid' => $grade_item_mod->id, 'userid' => $userid));
             }
 
-            if($users->count >0){
+            if(is_object($users) && $users->count >0){
                 $sect_glob++;
                 if($actio == 'post'){
                     $sect_glob++;
@@ -220,12 +220,6 @@ Class ucicactivity_LocalLib{
                 }
             }
 
-
-
-
-            if($users->count > 0){
-                //$sect_glob++;
-            }
 
             /*$paramMod = array(
                 'courseid' => $courseid,

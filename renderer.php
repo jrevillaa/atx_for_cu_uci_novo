@@ -94,7 +94,8 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                 $grade_mod = $DB->get_record('grade_grades',  array('itemid' => $grade_item_mod->id, 'userid' => $USER->id));
             }
 
-            if($users->count >0){
+
+            if(is_object($users) && $users->count >0){
                 $state_mod++;
                 if($actio == 'post'){
                     $state_mod++;
