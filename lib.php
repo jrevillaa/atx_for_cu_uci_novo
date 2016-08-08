@@ -296,7 +296,7 @@ class format_ucicactivity extends format_base {
         return true;
     }
 
-
+    /*
     public function inplace_editable_render_section_name($section, $linkifneeded = true,
                                                          $editable = null, $edithint = null, $editlabel = null) {
 
@@ -310,7 +310,7 @@ class format_ucicactivity extends format_base {
             $editlabel = new lang_string('newsectionname', 'format_ucicactivity', $title);
         }
         return parent::inplace_editable_render_section_name($section, $linkifneeded, $editable, $edithint, $editlabel);
-    }
+    }*/
 }
 
 
