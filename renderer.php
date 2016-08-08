@@ -336,7 +336,7 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
         return array_merge($controls, parent::section_edit_controls($course, $section, $onsectionpage));
     }
 
-
+/*
     public function section_title($section, $course) {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section));
     }
@@ -344,7 +344,7 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
     
     public function section_title_without_link($section, $course) {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section, false));
-    }
+    }*/
 
     protected function section_header($section, $course, $onsectionpage, $sectionreturn=null) {
         global $PAGE,$USER;
