@@ -38,31 +38,31 @@ if(!$USER->editing){
         }
 
 
-    echo '<div class="progress">
-              <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: ' . $data_bar['good']. '%;">
-                ' . $data_bar['good'] . '% Completado
-              </div>
-              <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: ' . $data_bar['bad'] . '%;">
-                ' . $bad . '%
-              </div>
+echo '<div class="progress">
+          <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: ' . $data_bar['good']. '%;">
+            <div class="texto-barra">'. $data_bar['good'] . '% Completado </div>
           </div>
-          <div class="legend">
-            <ul>
-              <li class="finished">
-                <span class="color"></span>
-                <span>Completado</span>
-              </li>
-              <li class="in-progress">
-                <span class="color"></span>
-                <span>En Progreso</span>
-              </li>
-              <li class="not-entered">
-                <span class="color"></span>
-                <span>No Revisado</span>
-              </li>
-            </ul>
-          </div>';
-  }
+          <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: ' . $data_bar['bad'] . '%;">
+            ' . $bad . '%
+          </div>
+      </div>
+      <div class="legend">
+        <ul>
+          <li class="finished">
+            <span class="color"></span>
+            <span>Completado</span>
+          </li>
+          <li class="in-progress">
+            <span class="color"></span>
+            <span>En Progreso</span>
+          </li>
+          <li class="not-entered">
+            <span class="color"></span>
+            <span>No Revisado</span>
+          </li>
+        </ul>
+      </div>';
+}
 
 
 }

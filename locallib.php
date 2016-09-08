@@ -58,6 +58,9 @@ Class ucicactivity_LocalLib{
         $tm_instance = $this->db->get_record('course_modules',  array('id' => $value));
 
         $name_mod = $this->db->get_record('modules', array('id' => $tm_instance->module));
+        /*echo "<pre>";
+            print_r($name_mod);
+            echo "</pre>";*/
         if($name_mod->name == 'label' 
           || $name_mod->name == 'book' 
           || $name_mod->name == 'chat' 
@@ -65,6 +68,7 @@ Class ucicactivity_LocalLib{
           || $name_mod->name == 'data'
           || $name_mod->name == 'folder'
           || $name_mod->name == 'glossary'
+          || $name_mod->name == 'ucicbootstrap'
           || $name_mod->name == 'imscp'
           || $name_mod->name == 'lesson'
           || $name_mod->name == 'lti'
@@ -77,6 +81,10 @@ Class ucicactivity_LocalLib{
           unset($mods[$key]);
         }
       }
+/*
+      echo "<pre>";
+            print_r($mods);
+            echo "</pre>";*/
 
       $sect_glob = 0;
 
@@ -233,12 +241,10 @@ Class ucicactivity_LocalLib{
             
 
 
-            /*echo "<pre>";
-            print_r($sect_glob);
-            echo "</pre>";*/
+            
         
-      }
-            /*echo "GLOBAL<pre>";
+      }/*
+            echo "GLOBAL<pre>";
             print_r($sect_glob . ' ----- ' . count($mods));
             echo "</pre>";*/
 

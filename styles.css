@@ -129,8 +129,11 @@
 	/*color: #034b8b;*/
 	color: #AAA;
 	font-weight: normal;
+	padding-left: 1rem;
 }
-
+.course-content ul.ucicactivity li.section .content .availabilityinfo{
+	padding-left: 1rem;
+}
 .course-content ul.ucicactivity li.section h3.sectionname:before{
 	position: absolute;
 	content: '';
@@ -141,8 +144,8 @@
 	/*background: #034b8b;*/
 	background: #AAA;
 	width: 11px;
-	height: 11px;
 	left: -5px;
+	height: 11px;
 	z-index: 10;
 }
 
@@ -180,3 +183,40 @@
 	    width: auto !important;
     display: inline-block !important;
 }
+.format-ucicactivity .progress{
+    width: 100%;
+    position: relative;
+    float: none;
+    right: 0;
+} 
+
+/*ESTILOS DIEGO*/
+
+.progress-bar.progress-bar-danger {
+	display: none;
+}
+
+.progress-bar-success {
+	border-top-right-radius: 2em;
+    border-bottom-right-radius: 2em;
+}
+
+
+.course-content {
+	position: relative;
+}
+
+.course-content .progress {
+	overflow: visible !important;
+}
+
+.texto-barra {
+	position: absolute;
+    margin: -24px 0;
+    color: #737373;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+
+

@@ -9,13 +9,78 @@ require_once($CFG->dirroot.'/course/format/ucicactivity/locallib.php');
 
 
 class format_ucicactivity_course_renderer extends core_course_renderer{
+
+	
+	public function course_section_cm_list($course, $section, $sectionreturn = null, $displayoptions = array()) {
+        global $USER;
+
+        $output = '';
+        $modinfo = get_fast_modinfo($course);
+        if (is_object($section)) {
+            $section = $modinfo->get_section_info($section->section);
+        } else {
+            $section = $modinfo->get_section_info($section);
+        }
+        $completioninfo = new completion_info($course);
+
+        // check if we are currently in the process of moving a module with JavaScript disabled
+        $ismoving = $this->page->user_is_editing() && ismoving($course->id);
+        if ($ismoving) {
+            $movingpix = new pix_icon('movehere', get_string('movehere'), 'moodle', array('class' => 'movetarget'));
+            $strmovefull = strip_tags(get_string("movefull", "", "'$USER->activitycopyname'"));
+        }
+
+        // Get the list of modules visible to user (excluding the module being moved if there is one)
+        $moduleshtml = array();
+        if (!empty($modinfo->sections[$section->section])) {
+            foreach ($modinfo->sections[$section->section] as $modnumber) {
+                $mod = $modinfo->cms[$modnumber];
+
+                if ($ismoving and $mod->id == $USER->activitycopy) {
+                    // do not display moving mod
+                    continue;
+                }
+
+                if ($modulehtml = $this->course_section_cm_list_item($course,
+                        $completioninfo, $mod, $sectionreturn, $displayoptions)) {
+                    $moduleshtml[$modnumber] = $modulehtml;
+                }
+            }
+        }
+
+        $sectionoutput = '';
+        if (!empty($moduleshtml) || $ismoving) {
+            foreach ($moduleshtml as $modnumber => $modulehtml) {
+                if ($ismoving) {
+                    $movingurl = new moodle_url('/course/mod.php', array('moveto' => $modnumber, 'sesskey' => sesskey()));
+                    $sectionoutput .= html_writer::tag('li',
+                            html_writer::link($movingurl, $this->output->render($movingpix), array('title' => $strmovefull)),
+                            array('class' => 'movehere'));
+                }
+
+                $sectionoutput .= $modulehtml;
+            }
+
+            if ($ismoving) {
+                $movingurl = new moodle_url('/course/mod.php', array('movetosection' => $section->id, 'sesskey' => sesskey()));
+                $sectionoutput .= html_writer::tag('li',
+                        html_writer::link($movingurl, $this->output->render($movingpix), array('title' => $strmovefull)),
+                        array('class' => 'movehere'));
+            }
+        }
+
+        // Always output the section module list.
+        $output .= html_writer::tag('ul', $sectionoutput, array('class' => 'section img-text collapse  panel-collapse', 'id'=>'sect-'.$section->section));
+
+        return $output;
+    }
     
 
     public function course_section_cm_list_item($course, &$completioninfo, cm_info $mod, $sectionreturn, $displayoptions = array()) {
         global $COURSE,$USER,$DB;
         $output = '';
         if ($modulehtml = $this->course_section_cm($course, $completioninfo, $mod, $sectionreturn, $displayoptions)) {
-            
+
             $state_mod = 0;
 
             $modclasses = 'activity ' . $mod->modname . ' modtype_' . $mod->modname . ' ' . $mod->extraclasses;
@@ -31,7 +96,7 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
             }
 
             $groupname = null;
-           
+
 
 
             $context = context_course::instance($COURSE->id);
@@ -69,7 +134,7 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                              AND l.anonymous = 0
                              AND l.contextlevel = :contextlevel
                              AND (l.origin = 'web' OR l.origin = 'ws')
-                             AND l.userid = ra.userid 
+                             AND l.userid = ra.userid
                              WHERE ra.userid =" . $USER->id;
               $groupbysql = " GROUP BY ra.userid";
 
@@ -89,7 +154,7 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                 );
 
             $grade_item_mod = $DB->get_record('grade_items',  $paramMod);
-            
+
             if( is_object($grade_item_mod) ){
                 $grade_mod = $DB->get_record('grade_grades',  array('itemid' => $grade_item_mod->id, 'userid' => $USER->id));
             }
@@ -103,7 +168,7 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
             }
 
             if( is_object($grade_item_mod) && is_object($grade_mod) && $grade_mod->finalgrade != null && $actio == 'view'){
-                $state_mod++;   
+                $state_mod++;
             }
 
 
@@ -112,7 +177,7 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
             if($mod->modname == 'feedback'){
                 $tmp_feedback = $DB->get_record('feedback_completed',  array('feedback' => $tm_mo->instance, 'userid' => $USER->id));
                 if(is_object($tmp_feedback)){
-                    $state_mod++;   
+                    $state_mod++;
                 /*echo "<pre>";
                 print_r($users);
                 print_r($state_mod);
@@ -130,38 +195,42 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                     $mod_close = $DB->get_record('scorm',  array('id' => $tm_mo->instance));
                     if( time() - $mod_close->timeclose >= 0){
                         $state_mod = 3;
-                    } 
+                    }
                     break;
                 case 'quiz':
                     // timeclose
                     $mod_close = $DB->get_record('quiz',  array('id' => $tm_mo->instance));
                     if( time() - $mod_close->timeclose >= 0){
                         $state_mod = 3;
-                    } 
+                    }
                     break;
                 case 'assign':
                     // duedate
                     $mod_close = $DB->get_record('assign',  array('id' => $tm_mo->instance));
                     if( time() - $mod_close->duedate >= 0){
                         $state_mod = 3;
-                    } 
+                    }
                     break;
                 case 'feedback':
                     // timeclose
                     $mod_close = $DB->get_record('feedback',  array('id' => $tm_mo->instance));
                     if( time() - $mod_close->timeclose >= 0){
                         $state_mod = 3;
-                    } 
+                    }
+                    break;
+                case 'resource':
+                    // timeclose
+                        $state_mod = 3;
                     break;
             }
 
-            
+
 
             switch ($state_mod) {
                 case 1:
                     $modclasses .= ' activity-progress ';
                     break;
-                
+
                 case 2:
                     $modclasses .= ' activity-finished ';
                     break;
@@ -252,7 +321,7 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
 
 
 }
- 
+
 class format_ucicactivity_renderer extends format_section_renderer_base{
 
 
@@ -274,12 +343,13 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
 
 
     protected function start_section_list() {
-        return html_writer::start_tag('ul', array('class' => 'ucicactivity'));
+		return html_writer::start_tag('ul',array('class' => 'ucicactivity'));
+
     }
 
 
     protected function end_section_list() {
-        return html_writer::end_tag('ul');
+	        return html_writer::end_tag('ul');
     }
 
 
@@ -341,7 +411,7 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section));
     }
 
-    
+
     public function section_title_without_link($section, $course) {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section, false));
     }*/
@@ -373,7 +443,7 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
                 case 0:
                     $modclasses .= ' section-blocked ';
                     break;
-                
+
                 case 1:
                     $modclasses .= ' section-progress ';
                     break;
@@ -384,16 +454,16 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
             }
 
         $o.= html_writer::start_tag('li', array('id' => 'section-'.$section->section,
-            'class' => 'section main clearfix'.$sectionstyle . $modclasses , 'role'=>'region',
+            'class' => 'section main clearfix'.$sectionstyle . $modclasses, 'role'=>'region',
             'aria-label'=> get_section_name($course, $section)));
 
+
         // Create a span that contains the section title to be used to create the keyboard section move menu.
-        $o .= html_writer::tag('span', get_section_name($course, $section), array('class' => 'hidden sectionname'));
+        $o .= html_writer::tag('span', get_section_name($course, $section) .'/////', array('class' => 'hidden sectionname'));
 
         $leftcontent = $this->section_left_content($section, $course, $onsectionpage);
         $o.= html_writer::tag('div', $leftcontent, array('class' => 'left side'));
-
-        $rightcontent = $this->section_right_content($section, $course, $onsectionpage);
+		$rightcontent = $this->section_right_content($section, $course, $onsectionpage);
         $o.= html_writer::tag('div', $rightcontent, array('class' => 'right side'));
         $o.= html_writer::start_tag('div', array('class' => 'content'));
 
@@ -407,12 +477,16 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
         if ($hasnamenotsecpg || $hasnamesecpg) {
             $classes = '';
         }
-        $sectionname = html_writer::tag('span', $this->section_title($section, $course));
-        $o.= $this->output->heading($sectionname, 3, 'sectionname' . $classes);
+        $o.= html_writer::start_tag('div');
+        $sectionname = html_writer::tag('span', $this->section_title($section, $course), array('class'=> 'sectionname' . $classes,'data-toggle'=>'collapse', 'href'=>'#sect-'.$section->section));//'section-'.$section->section
+        $o .= html_writer::tag('h3',$sectionname);
+        //$o.= $this->output->heading($sectionname, 3,'','esteeselid');
 
+       
         $o.= html_writer::start_tag('div', array('class' => 'summary'));
         $o.= $this->format_summary_text($section);
         $o.= html_writer::end_tag('div');
+        
 
         $context = context_course::instance($course->id);
         $o .= $this->section_availability_message($section,
@@ -422,6 +496,6 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
     }
 
 
-    
+
 
 }
