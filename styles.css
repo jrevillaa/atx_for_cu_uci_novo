@@ -130,6 +130,7 @@
 	color: #AAA;
 	font-weight: normal;
 	padding-left: 1rem;
+	cursor: pointer;
 }
 .course-content ul.ucicactivity li.section .content .availabilityinfo{
 	padding-left: 1rem;

@@ -70,7 +70,9 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
         }
 
         // Always output the section module list.
-        $output .= html_writer::tag('ul', $sectionoutput, array('class' => 'section img-text collapse  panel-collapse', 'id'=>'sect-'.$section->section));
+        $output .= html_writer::tag('ul', $sectionoutput, array('class' => 'section img-text'));
+
+        $output .= html_writer::end_tag('div'); //end collapse
 
         return $output;
     }
@@ -343,7 +345,7 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
 
 
     protected function start_section_list() {
-		return html_writer::start_tag('ul',array('class' => 'ucicactivity'));
+		return html_writer::start_tag('ul',array('class' => 'ucicactivity', 'id'=>'activity-accordion'));
 
     }
 
@@ -478,11 +480,18 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
             $classes = '';
         }
         $o.= html_writer::start_tag('div');
-        $sectionname = html_writer::tag('span', $this->section_title($section, $course), array('class'=> 'sectionname' . $classes,'data-toggle'=>'collapse', 'href'=>'#sect-'.$section->section));//'section-'.$section->section
-        $o .= html_writer::tag('h3',$sectionname);
+        $sectionname = html_writer::tag('span', $this->section_title($section, $course),
+            array(
+                'class'=> ' collapsable' . $classes,
+                'target' => '#sect-'.$section->section,
+            ));
+
+        $o .= html_writer::tag('h3',$sectionname, array('class' => 'sectionname'));
         //$o.= $this->output->heading($sectionname, 3,'','esteeselid');
 
-       
+        //collapse init
+        $o.= html_writer::start_tag('div', array('class' => 'panel-collapse', 'id'=>'sect-'.$section->section));
+
         $o.= html_writer::start_tag('div', array('class' => 'summary'));
         $o.= $this->format_summary_text($section);
         $o.= html_writer::end_tag('div');
@@ -491,6 +500,7 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
         $context = context_course::instance($course->id);
         $o .= $this->section_availability_message($section,
             has_capability('moodle/course:viewhiddensections', $context));
+
 
         return $o;
     }

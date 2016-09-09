@@ -74,3 +74,4 @@ if (!empty($displaysection)) {
 
 
 $PAGE->requires->js('/course/format/ucicactivity/format.js');
+$PAGE->requires->js_call_amd('format_ucicactivity/module', 'init');
