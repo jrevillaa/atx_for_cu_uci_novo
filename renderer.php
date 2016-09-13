@@ -486,8 +486,8 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
                 'target' => '#sect-'.$section->section,
             ));
 
-        $o .= html_writer::tag('h3',$sectionname, array('class' => 'sectionname'));
-        //$o.= $this->output->heading($sectionname, 3,'','esteeselid');
+        //$o .= html_writer::tag('h3',$sectionname, array('class' => 'sectionname'));
+        $o.= $this->output->heading($sectionname, 3,'sectionname','');
 
         //collapse init
         $o.= html_writer::start_tag('div', array('class' => 'panel-collapse', 'id'=>'sect-'.$section->section));
