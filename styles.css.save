@@ -19,10 +19,6 @@
 	position: relative;
 }
 
-.ucicactivity .panel-collapse[id^="sect-"]{
-	display: none;
-}
-
 .ucicactivity:before{
 	border-left: 1px dotted #AAA;
 	content: '';
@@ -31,6 +27,10 @@
 	bottom: 15px;
 	width: 1px;
 	position: absolute;
+}
+
+.course-content .progress{
+	margin-top: 1rem;
 }
 
 .course-content .legend ul{
@@ -88,10 +88,6 @@
 	border: 0;
 }
 
-.course-content ul.ucicactivity li.section.main:first-child{
-	margin-top: 4rem;
-}
-
 .course-content ul.ucicactivity li.section{
 	position: relative;
 }
@@ -133,10 +129,6 @@
 	margin: 0;
 }
 
-.course-content ul.ucicactivity li.section h3{
-	margin-top: 0;
-}
-
 .course-content ul.ucicactivity li.section h3.sectionname{
 	position: relative;
 	margin-bottom: 0;
@@ -145,10 +137,9 @@
 .course-content ul.ucicactivity li.section h3.sectionname span{ 
 	/*color: #034b8b;*/
 	color: #AAA;
-	font-weight: bold;
+	font-weight: normal;
 	padding-left: 1rem;
 	cursor: pointer;
-	font-size: 1rem;
 }
 .course-content ul.ucicactivity li.section .content .availabilityinfo{
 	padding-left: 1rem;
@@ -157,8 +148,8 @@
 	position: absolute;
 	content: '';
 	border-radius: 50%;
-	top: .7rem;
-	/*bottom: 0;*/
+	top: 0;
+	bottom: 0;
 	margin: auto;
 	/*background: #034b8b;*/
 	background: #AAA;
@@ -171,9 +162,7 @@
 .course-content ul.ucicactivity li.section .summary,
 .course-content ul.ucicactivity li.section .section{
 	/*border-left: 1px solid #AAA;*/
-	/*padding-left: 40px;*/
-	padding-left: 0;
-
+	padding-left: 40px;
 }
 
 .course-content ul.ucicactivity li.section .summary{
@@ -192,11 +181,7 @@
 	background: #5bc6d5;
 }
 
-.jsenabled .course-content ul.ucicactivity li.section ul.section li.activity .activityinstancess span{
-	/*font-size: 1.5rem;*/
-}
-
-span.jsenabled .course-content ul.ucicactivity li.section ul.section li.activity.activity-blocked .activityinstancess span{
+.jsenabled .course-content ul.ucicactivity li.section ul.section li.activity.activity-blocked .activityinstancess span{
 	color: #737373;	
 }
 
@@ -213,12 +198,10 @@ span.jsenabled .course-content ul.ucicactivity li.section ul.section li.activity
     display: inline-block !important;
 }
 .format-ucicactivity .progress{
+    width: 100%;
     position: relative;
     float: none;
     right: 0;
-	margin-top: 1rem;
-	width: 100%;
-	height: .7rem;
 } 
 
 /*ESTILOS DIEGO*/
@@ -249,19 +232,5 @@ span.jsenabled .course-content ul.ucicactivity li.section ul.section li.activity
     font-size: 14px;
 }
 
-.activity.ucicbootstrap .mod-indent-outer{
-	width: 100%;
-}
 
 
-
-/* sangría de cursos */
-
-.ucicactivity .section .activity .mod-indent-outer{
-	padding-left: 0;
-}
-
-.ucicactivity .mod-indent-1{
-	padding-left: 0;
-	width: 0;	
-}

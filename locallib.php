@@ -68,7 +68,6 @@ Class ucicactivity_LocalLib{
           || $name_mod->name == 'data'
           || $name_mod->name == 'folder'
           || $name_mod->name == 'glossary'
-          || $name_mod->name == 'ucicbootstrap'
           || $name_mod->name == 'imscp'
           || $name_mod->name == 'lesson'
           || $name_mod->name == 'lti'
@@ -237,18 +236,13 @@ Class ucicactivity_LocalLib{
                 );
 
             $grade_item_mod = $DB->get_record('grade_items',  $paramMod);*/
-
-            
-
-
-            
         
-      }/*
-            echo "GLOBAL<pre>";
+      }
+            /*echo "GLOBAL<pre>";
             print_r($sect_glob . ' ----- ' . count($mods));
             echo "</pre>";*/
 
-            if($sect_glob == count($mods) * 2){
+            if($sect_glob == count($mods) + 1){
               return 2;
             }else if($sect_glob == 0){
               return 0;

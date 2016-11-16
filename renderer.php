@@ -187,43 +187,58 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                 }
             }
 
-            /*echo "<pre>";
-            print_r($tm_mo);
-            echo "</pre>";*/
 
             switch ($mod->modname) {
                 case 'scorm':
                     // timeclose
                     $mod_close = $DB->get_record('scorm',  array('id' => $tm_mo->instance));
-                    if( time() - $mod_close->timeclose >= 0){
+                    if( time() - $mod_close->timeclose >= 0 && $mod_close->timeclose != 0){
                         $state_mod = 3;
                     }
                     break;
                 case 'quiz':
                     // timeclose
                     $mod_close = $DB->get_record('quiz',  array('id' => $tm_mo->instance));
-                    if( time() - $mod_close->timeclose >= 0){
+                    if( time() - $mod_close->timeclose >= 0 && $mod_close->timeclose != 0){
                         $state_mod = 3;
                     }
+                    
                     break;
                 case 'assign':
                     // duedate
                     $mod_close = $DB->get_record('assign',  array('id' => $tm_mo->instance));
-                    if( time() - $mod_close->duedate >= 0){
+                    if( time() - $mod_close->duedate >= 0 && $mod_close->timeclose != 0){
                         $state_mod = 3;
                     }
                     break;
                 case 'feedback':
                     // timeclose
                     $mod_close = $DB->get_record('feedback',  array('id' => $tm_mo->instance));
-                    if( time() - $mod_close->timeclose >= 0){
+                    if( time() - $mod_close->timeclose >= 0 && $mod_close->timeclose != 0){
                         $state_mod = 3;
                     }
                     break;
                 case 'resource':
                     // timeclose
-                        $state_mod = 3;
+                    if ($state_mod == 1) {
+                        $state_mod++;
+                    }                        
                     break;
+
+                case 'ucicbootstrap':
+                    // timeclose
+                    if ($state_mod == 1) {
+                        $state_mod++;
+                    }                        
+                    break;
+
+                case 'url':
+                    // timeclose
+                    if ($state_mod == 1) {
+                        $state_mod++;
+                    }                        
+                    break;
+               
             }
 
 
@@ -237,7 +252,11 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                     $modclasses .= ' activity-finished ';
                     break;
 
-                case 3:
+                case 0;
+                    $modclasses .= ' activity-blocked ';
+                    break;
+
+                case 3 ;
                     $modclasses .= ' activity-blocked ';
                     break;
             }
@@ -436,9 +455,6 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
             }
         }
 
-        /*echo "<pre>";
-        print_r($section);
-        echo "</pre>";*/
 
         $modclasses  = '';
         switch ($locallib->print_section($section->id,$course->id,$USER->id)) {
