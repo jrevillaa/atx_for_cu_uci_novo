@@ -72,9 +72,9 @@ Class ucicactivity_LocalLib{
           || $name_mod->name == 'lesson'
           || $name_mod->name == 'lti'
           || $name_mod->name == 'page'
-          || $name_mod->name == 'resource'
+          //|| $name_mod->name == 'resource'
           || $name_mod->name == 'survey'
-          || $name_mod->name == 'url'
+          //|| $name_mod->name == 'url'
           || $name_mod->name == 'workshop'
           || $name_mod->name == 'attendance'){
           unset($mods[$key]);
@@ -183,6 +183,7 @@ Class ucicactivity_LocalLib{
                     } 
                     break;
             }
+           
 
             $paramMod = array(
                 'courseid' => $courseid,
@@ -227,6 +228,18 @@ Class ucicactivity_LocalLib{
                 }
             }
 
+           
+
+             if ($name_mod->name == 'resource' || $name_mod->name == 'url') {
+              //echo $actio;
+              if($users->count > 0){
+                //$sect_glob++; 
+              }
+              /*echo  '<pre>';
+              print_r($users);
+              echo '</pre>';*/
+            }
+
 
             /*$paramMod = array(
                 'courseid' => $courseid,
@@ -236,13 +249,14 @@ Class ucicactivity_LocalLib{
                 );
 
             $grade_item_mod = $DB->get_record('grade_items',  $paramMod);*/
+
         
       }
-            /*echo "GLOBAL<pre>";
+           /* echo "GLOBAL<pre>";
             print_r($sect_glob . ' ----- ' . count($mods));
             echo "</pre>";*/
 
-            if($sect_glob == count($mods) + 1){
+            if($sect_glob >= count($mods) ){
               return 2;
             }else if($sect_glob == 0){
               return 0;

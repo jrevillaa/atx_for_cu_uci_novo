@@ -186,7 +186,7 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                 echo "</pre>";*/
                 }
             }
-
+            //echo $state_mod.'<br>';
 
             switch ($mod->modname) {
                 case 'scorm':
@@ -241,7 +241,7 @@ class format_ucicactivity_course_renderer extends core_course_renderer{
                
             }
 
-
+             //echo '----'.$state_mod.'-----<br>';
 
             switch ($state_mod) {
                 case 1:
@@ -455,7 +455,9 @@ class format_ucicactivity_renderer extends format_section_renderer_base{
             }
         }
 
-
+        /*echo "<pre>";
+        print_r($locallib->print_section($section->id,$course->id,$USER->id));
+        echo "</pre>";*/
         $modclasses  = '';
         switch ($locallib->print_section($section->id,$course->id,$USER->id)) {
                 case 0:
